@@ -132,12 +132,15 @@ if show_loss_plot_mse:
     # Compute absolute errors
     df_filtered['loss_llama_70b'] = (df_filtered['inflation'] - df_filtered['pred_signal_llama_70b'])**2
     df_filtered['loss_swap'] = (df_filtered['inflation'] - df_filtered['pred_swap'])**2
+    df_filtered['loss_ar'] = (df_filtered['inflation'] - df_filtered['pred_ar'])**2
+
+    
 
     # Create interactive Plotly figure for Loss/Error
     fig2 = go.Figure()
 
     fig2.add_trace(go.Scatter(
-        x=df_filtered.index, y=df_filtered['loss_llama_70b'],
+        x=df_filtered.index, y=df_filtered['loss_llama_70b'].cumsum() - df_filtered['loss_ar'].cumsum(),
         mode='lines+markers',  
         name='Llama 70B Error',
         line=dict(color='red', width=1, dash='dash'),
@@ -145,7 +148,7 @@ if show_loss_plot_mse:
     ))
 
     fig2.add_trace(go.Scatter(
-        x=df_filtered.index, y=df_filtered['loss_swap'],
+        x=df_filtered.index, y=df_filtered['loss_swap'].cumsum() - df_filtered['loss_ar'].cumsum(),
         mode='lines+markers',  
         name='Swap Prediction Error',
         line=dict(color='blue', width=1, dash='dot'),
