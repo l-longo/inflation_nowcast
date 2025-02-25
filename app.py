@@ -85,7 +85,8 @@ st.plotly_chart(fig, use_container_width=True)
 
 
 # Checkbox to toggle the error plot
-show_loss_plot = st.checkbox("Show Prediction Error (Loss)")
+show_loss_plot = st.checkbox("Show Prediction Error (MAE)")
+show_loss_plot_mse = st.checkbox("Show Prediction Error (MSE)")
 
 if show_loss_plot:
     # Compute absolute errors
@@ -123,3 +124,44 @@ if show_loss_plot:
 
     # Show the loss plot
     st.plotly_chart(fig2, use_container_width=True)
+
+
+
+
+if show_loss_plot_mse:
+    # Compute absolute errors
+    df_filtered['loss_llama_70b'] = (df_filtered['inflation'] - df_filtered['pred_signal_llama_70b'])**2
+    df_filtered['loss_swap'] = (df_filtered['inflation'] - df_filtered['pred_swap'])**2
+
+    # Create interactive Plotly figure for Loss/Error
+    fig2 = go.Figure()
+
+    fig2.add_trace(go.Scatter(
+        x=df_filtered.index, y=df_filtered['loss_llama_70b'],
+        mode='lines+markers',  
+        name='Llama 70B Error',
+        line=dict(color='red', width=1, dash='dash'),
+        marker=dict(size=6, symbol='circle', color='red')  
+    ))
+
+    fig2.add_trace(go.Scatter(
+        x=df_filtered.index, y=df_filtered['loss_swap'],
+        mode='lines+markers',  
+        name='Swap Prediction Error',
+        line=dict(color='blue', width=1, dash='dot'),
+        marker=dict(size=6, symbol='diamond', color='blue')  
+    ))
+
+    # Customize layout
+    fig2.update_layout(
+        title=f"Prediction Errors (Absolute Loss) ({start_year}-{end_year})",
+        xaxis_title="Date",
+        yaxis_title="Absolute Error",
+        legend=dict(x=0, y=1),
+        hovermode="x unified",
+        template="plotly_white"
+    )
+
+    # Show the loss plot
+    st.plotly_chart(fig2, use_container_width=True)
+
