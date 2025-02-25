@@ -1,0 +1,4 @@
+openpyxl @ file:///Users/runner/miniforge3/conda-bld/openpyxl_1725460860345/work
+pandas @ file:///Users/runner/miniforge3/conda-bld/pandas_1726878432242/work
+plotly==6.0.0
+streamlit==1.42.2
