@@ -86,7 +86,6 @@ st.plotly_chart(fig, use_container_width=True)
 
 # Checkbox to toggle the error plot
 show_loss_plot = st.checkbox("Show Prediction Error (MAE)")
-show_loss_plot_mse = st.checkbox("Show Prediction Error (MSE)")
 
 if show_loss_plot:
     # Compute absolute errors
@@ -127,6 +126,7 @@ if show_loss_plot:
 
 
 
+show_loss_plot_mse = st.checkbox("Show Prediction Error (MSE)")
 
 if show_loss_plot_mse:
     # Compute absolute errors
