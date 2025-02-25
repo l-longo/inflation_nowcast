@@ -3,7 +3,7 @@ import pandas as pd
 import plotly.graph_objects as go
 
 # File path (update if necessary)
-file_path = "/Users/luigilongo/Desktop/streamlit_prova/data.xlsx"
+file_path = os.path.join(os.getcwd(), "data.xlsx")
 
 # Load the Excel file
 try:
