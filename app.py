@@ -45,7 +45,7 @@ start_year, end_year = st.slider(
 df_filtered = df0_shifted.loc[str(start_year):str(end_year)]
 
 
-st.write('For the US the benchmark (blue) is a prediction using the Inflation-SWAP, or Europe is an AR(1).') 
+st.write('For the US the benchmark (blue) is a prediction using the Inflation-SWAP, for Europe is an AR(1).') 
 # Create interactive Plotly figure
 fig = go.Figure()
 fig.add_trace(go.Scatter(
