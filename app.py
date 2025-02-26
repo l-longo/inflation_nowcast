@@ -15,6 +15,7 @@ if region == "US (Core PCE)":
         st.error(f"File not found: {file_path}")
         st.stop()
     pred_col = 'pred_swap'
+    target_var = 'inflation'
 else:
     file_path = os.path.join(os.getcwd(), "data_infl_europe_120.xlsx")
     try:
@@ -23,6 +24,7 @@ else:
         st.error(f"File not found: {file_path}")
         st.stop()
     pred_col = 'pred_ar'
+    target_var = 'inflation'
 
 # Define h_step (shift parameter)
 h_step = 1
@@ -45,7 +47,7 @@ df_filtered = df0_shifted.loc[str(start_year):str(end_year)]
 # Create interactive Plotly figure
 fig = go.Figure()
 fig.add_trace(go.Scatter(
-    x=df_filtered.index, y=df_filtered['inflation'],
+    x=df_filtered.index, y=df_filtered[target_var],
     mode='lines', name='True Inflation', line=dict(color='green', width=2.5)
 ))
 fig.add_trace(go.Scatter(
@@ -78,9 +80,9 @@ st.plotly_chart(fig, use_container_width=True)
 # Checkbox to toggle the error plot
 show_loss_plot = st.checkbox("Show Prediction Error (MAE)")
 if show_loss_plot:
-    st.write('Mean absolute deviation from the target, over time.')
-    df_filtered['loss_llama_70b'] = abs(df_filtered['inflation'] - df_filtered['pred_signal_llama_70b'])
-    df_filtered['loss_pred'] = abs(df_filtered['inflation'] - df_filtered[pred_col])
+    st.write('Mean absolute deviation from the target_var, over time.')
+    df_filtered['loss_llama_70b'] = abs(df_filtered[target_var] - df_filtered['pred_signal_llama_70b'])
+    df_filtered['loss_pred'] = abs(df_filtered[target_var] - df_filtered[pred_col])
     
     fig2 = go.Figure()
     fig2.add_trace(go.Scatter(
@@ -109,8 +111,8 @@ if show_loss_plot:
 show_loss_plot_mse = st.checkbox("Show Prediction Error (MSE)")
 if show_loss_plot_mse:
     st.write('Cumulative mean squared errors: the best model presents the lowest.')
-    df_filtered['loss_llama_70b'] = (df_filtered['inflation'] - df_filtered['pred_signal_llama_70b'])**2
-    df_filtered['loss_pred'] = (df_filtered['inflation'] - df_filtered[pred_col])**2
+    df_filtered['loss_llama_70b'] = (df_filtered[target_var] - df_filtered['pred_signal_llama_70b'])**2
+    df_filtered['loss_pred'] = (df_filtered[target_var] - df_filtered[pred_col])**2
     
     fig3 = go.Figure()
     fig3.add_trace(go.Scatter(
