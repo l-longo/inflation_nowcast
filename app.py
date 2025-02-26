@@ -78,6 +78,7 @@ st.plotly_chart(fig, use_container_width=True)
 # Checkbox to toggle the error plot
 show_loss_plot = st.checkbox("Show Prediction Error (MAE)")
 if show_loss_plot:
+    st.write('Mean absolute deviation from the target, over time.')
     df_filtered['loss_llama_70b'] = abs(df_filtered['inflation'] - df_filtered['pred_signal_llama_70b'])
     df_filtered['loss_pred'] = abs(df_filtered['inflation'] - df_filtered[pred_col])
     
@@ -107,7 +108,7 @@ if show_loss_plot:
 # Checkbox to toggle the cumulative squared error plot
 show_loss_plot_mse = st.checkbox("Show Prediction Error (MSE)")
 if show_loss_plot_mse:
-    st.write('cumulative mean squared errors (best model presents the lowest).')
+    st.write('Cumulative mean squared errors: the best model presents the lowest.')
     df_filtered['loss_llama_70b'] = (df_filtered['inflation'] - df_filtered['pred_signal_llama_70b'])**2
     df_filtered['loss_pred'] = (df_filtered['inflation'] - df_filtered[pred_col])**2
     
