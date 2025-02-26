@@ -58,7 +58,10 @@ fig.add_trace(go.Scatter(
 ))
 fig.add_trace(go.Scatter(
     x=df_filtered.index, y=df_filtered[pred_col],
-    mode='lines+markers', name=f'{region} Prediction',
+    if region == "US (Core PCE)":
+        mode='lines+markers', name=f'Swap Prediction',
+    else:
+        mode='lines+markers', name=f'AR Prediction',
     line=dict(color='blue', width=1, dash='dot'),
     marker=dict(size=6, symbol='diamond', color='blue')
 ))
