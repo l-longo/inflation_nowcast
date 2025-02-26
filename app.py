@@ -16,11 +16,12 @@ if region == "US (Core PCE)":
         st.stop()
     pred_col = 'pred_swap'
 else:
-    uploaded_file = st.file_uploader("Upload European Inflation Data (data_infl_europe_120.xlsx)", type=["xlsx"])
-    if uploaded_file is None:
-        st.warning("Please upload the dataset to proceed.")
+    file_path = os.path.join(os.getcwd(), "data_infl_europe_120.xlsx")
+    try:
+        df0 = pd.read_excel(file_path, engine="openpyxl", index_col=0, parse_dates=True)
+    except FileNotFoundError:
+        st.error(f"File not found: {file_path}")
         st.stop()
-    df0 = pd.read_excel(uploaded_file, engine="openpyxl", index_col=0, parse_dates=True)
     pred_col = 'pred_ar'
 
 # Define h_step (shift parameter)
