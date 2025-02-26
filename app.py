@@ -131,4 +131,5 @@ if show_loss_plot_mse:
         hovermode="x unified",
         template="plotly_white"
     )
+    fig3.update_layout(yaxis=dict(tickformat=".2e"))  # Scientific notation with 2 decimals
     st.plotly_chart(fig3, use_container_width=True)
