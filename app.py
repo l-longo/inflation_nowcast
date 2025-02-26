@@ -3,28 +3,35 @@ import pandas as pd
 import plotly.graph_objects as go
 import os
 
-# File path (update if necessary)
-file_path = os.path.join(os.getcwd(), "data.xlsx")
+# User selects the region
+region = st.radio("Select Region:", ["US (Core PCE)", "Europe (HICP)"])
 
-# Load the Excel file
-try:
-    df0 = pd.read_excel(file_path, engine="openpyxl", index_col=0, parse_dates=True)
-except FileNotFoundError:
-    st.error(f"File not found: {file_path}")
-    st.stop()
+# Load the data based on user selection
+if region == "US (Core PCE)":
+    file_path = os.path.join(os.getcwd(), "data.xlsx")
+    try:
+        df0 = pd.read_excel(file_path, engine="openpyxl", index_col=0, parse_dates=True)
+    except FileNotFoundError:
+        st.error(f"File not found: {file_path}")
+        st.stop()
+    pred_col = 'pred_swap'
+else:
+    uploaded_file = st.file_uploader("Upload European Inflation Data (data_infl_europe_120.xlsx)", type=["xlsx"])
+    if uploaded_file is None:
+        st.warning("Please upload the dataset to proceed.")
+        st.stop()
+    df0 = pd.read_excel(uploaded_file, engine="openpyxl", index_col=0, parse_dates=True)
+    pred_col = 'pred_ar'
 
 # Define h_step (shift parameter)
-h_step = 1  # Change this if needed
-
+h_step = 1
 # Shift index by h_step months
 df0_shifted = df0.copy()
 df0_shifted.index = df0_shifted.index - pd.DateOffset(months=h_step)
 
-
-# **User selects the year range**
+# User selects the year range
 min_year = 2019
-max_year = 2026  # Get last year in data
-
+max_year = 2026
 start_year, end_year = st.slider(
     "Select the year range:",
     min_value=min_year, max_value=max_year,
@@ -34,39 +41,28 @@ start_year, end_year = st.slider(
 # Filter data based on selected years
 df_filtered = df0_shifted.loc[str(start_year):str(end_year)]
 
-
 # Create interactive Plotly figure
 fig = go.Figure()
-
 fig.add_trace(go.Scatter(
     x=df_filtered.index, y=df_filtered['inflation'],
-    mode='lines', name='True Inflation: Core PCE yoy', line=dict(color='green', width=2.5)
+    mode='lines', name='True Inflation', line=dict(color='green', width=2.5)
 ))
-
 fig.add_trace(go.Scatter(
     x=df_filtered.index, y=df_filtered['pred_signal_llama_70b'],
-    mode='lines+markers',  # ✅ Markers added here
-    name='Llama 70B Prediction',
+    mode='lines+markers', name='Llama 70B Prediction',
     line=dict(color='red', width=1, dash='dash'),
-    marker=dict(size=6, symbol='circle', color='red')  # ✅ Customize markers
+    marker=dict(size=6, symbol='circle', color='red')
 ))
-
 fig.add_trace(go.Scatter(
-    x=df_filtered.index, y=df_filtered['pred_swap'],
-    mode='lines+markers',  # ✅ Markers added here
-    name='Swap Prediction',
+    x=df_filtered.index, y=df_filtered[pred_col],
+    mode='lines+markers', name=f'{region} Prediction',
     line=dict(color='blue', width=1, dash='dot'),
-    marker=dict(size=6, symbol='diamond', color='blue')  # ✅ Customize markers
+    marker=dict(size=6, symbol='diamond', color='blue')
 ))
-
-# fig.add_trace(go.Scatter(
-#     x=df_filtered.index, y=df_filtered['pred_ar'],
-#     mode='lines', name='AR Prediction', line=dict(color='brown', width=1, dash='dot')
-# ))
 
 # Customize layout
 fig.update_layout(
-    title="Inflation Predictions vs. True Values (2024 Onward)",
+    title=f"Inflation Predictions vs. True Values ({region})",
     xaxis_title="Date",
     yaxis_title="Inflation Rate",
     legend=dict(x=0, y=1),
@@ -75,43 +71,28 @@ fig.update_layout(
 )
 
 # Streamlit app
-st.title("📈 Inflation Nowcast (Core PCE)")
-
+st.title(f"📈 Inflation Nowcast ({region})")
 st.plotly_chart(fig, use_container_width=True)
-
-
-
-
-
 
 # Checkbox to toggle the error plot
 show_loss_plot = st.checkbox("Show Prediction Error (MAE)")
-
 if show_loss_plot:
-    # Compute absolute errors
     df_filtered['loss_llama_70b'] = abs(df_filtered['inflation'] - df_filtered['pred_signal_llama_70b'])
-    df_filtered['loss_swap'] = abs(df_filtered['inflation'] - df_filtered['pred_swap'])
-
-    # Create interactive Plotly figure for Loss/Error
+    df_filtered['loss_pred'] = abs(df_filtered['inflation'] - df_filtered[pred_col])
+    
     fig2 = go.Figure()
-
     fig2.add_trace(go.Scatter(
         x=df_filtered.index, y=df_filtered['loss_llama_70b'],
-        mode='lines+markers',  
-        name='Llama 70B Error',
+        mode='lines+markers', name='Llama 70B Error',
         line=dict(color='red', width=1, dash='dash'),
-        marker=dict(size=6, symbol='circle', color='red')  
+        marker=dict(size=6, symbol='circle', color='red')
     ))
-
     fig2.add_trace(go.Scatter(
-        x=df_filtered.index, y=df_filtered['loss_swap'],
-        mode='lines+markers',  
-        name='Swap Prediction Error',
+        x=df_filtered.index, y=df_filtered['loss_pred'],
+        mode='lines+markers', name=f'{region} Prediction Error',
         line=dict(color='blue', width=1, dash='dot'),
-        marker=dict(size=6, symbol='diamond', color='blue')  
+        marker=dict(size=6, symbol='diamond', color='blue')
     ))
-
-    # Customize layout
     fig2.update_layout(
         title=f"Prediction Errors (Absolute Loss) ({start_year}-{end_year})",
         xaxis_title="Date",
@@ -120,51 +101,33 @@ if show_loss_plot:
         hovermode="x unified",
         template="plotly_white"
     )
-
-    # Show the loss plot
     st.plotly_chart(fig2, use_container_width=True)
 
-
-
+# Checkbox to toggle the cumulative squared error plot
 show_loss_plot_mse = st.checkbox("Show Prediction Error (MSE)")
-
 if show_loss_plot_mse:
-    # Compute absolute errors
     df_filtered['loss_llama_70b'] = (df_filtered['inflation'] - df_filtered['pred_signal_llama_70b'])**2
-    df_filtered['loss_swap'] = (df_filtered['inflation'] - df_filtered['pred_swap'])**2
-    df_filtered['loss_ar'] = (df_filtered['inflation'] - df_filtered['pred_ar'])**2
-
+    df_filtered['loss_pred'] = (df_filtered['inflation'] - df_filtered[pred_col])**2
     
-
-    # Create interactive Plotly figure for Loss/Error
-    fig2 = go.Figure()
-
-    fig2.add_trace(go.Scatter(
-        x=df_filtered.index, y=df_filtered['loss_llama_70b'].cumsum() - df_filtered['loss_ar'].cumsum(),
-        mode='lines+markers',  
-        name='Llama 70B Error',
+    fig3 = go.Figure()
+    fig3.add_trace(go.Scatter(
+        x=df_filtered.index, y=df_filtered['loss_llama_70b'].cumsum(),
+        mode='lines+markers', name='Llama 70B Cumulative MSE',
         line=dict(color='red', width=1, dash='dash'),
-        marker=dict(size=6, symbol='circle', color='red')  
+        marker=dict(size=6, symbol='circle', color='red')
     ))
-
-    fig2.add_trace(go.Scatter(
-        x=df_filtered.index, y=df_filtered['loss_swap'].cumsum() - df_filtered['loss_ar'].cumsum(),
-        mode='lines+markers',  
-        name='Swap Prediction Error',
+    fig3.add_trace(go.Scatter(
+        x=df_filtered.index, y=df_filtered['loss_pred'].cumsum(),
+        mode='lines+markers', name=f'{region} Prediction Cumulative MSE',
         line=dict(color='blue', width=1, dash='dot'),
-        marker=dict(size=6, symbol='diamond', color='blue')  
+        marker=dict(size=6, symbol='diamond', color='blue')
     ))
-
-    # Customize layout
-    fig2.update_layout(
-        title=f"Prediction Errors (Absolute Loss) ({start_year}-{end_year})",
+    fig3.update_layout(
+        title=f"Cumulative Squared Prediction Errors (MSE) ({start_year}-{end_year})",
         xaxis_title="Date",
-        yaxis_title="Absolute Error",
+        yaxis_title="Cumulative Squared Error",
         legend=dict(x=0, y=1),
         hovermode="x unified",
         template="plotly_white"
     )
-
-    # Show the loss plot
-    st.plotly_chart(fig2, use_container_width=True)
-
+    st.plotly_chart(fig3, use_container_width=True)
