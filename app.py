@@ -64,8 +64,9 @@ df_filtered = df0_shifted.loc[str(start_year):str(end_year)]
 
 # Display the last available annual inflation rate and the Llama prediction
 last_inflation_index = df0[target_var].last_valid_index()
+last_llama_index = df0[pred_signal_llama_70b].last_valid_index()
 last_inflation_value = df0.loc[last_inflation_index, target_var]*100 if last_inflation_index else None
-last_llama_value = df0.loc[last_inflation_index+1, 'pred_signal_llama_70b']*100 if last_inflation_index else None
+last_llama_value = df0.loc[last_llama_index, 'pred_signal_llama_70b']*100 if last_inflation_index else None
 
 st.markdown(
     f"""
