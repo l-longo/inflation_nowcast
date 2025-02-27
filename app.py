@@ -87,14 +87,23 @@ fig.add_trace(go.Scatter(
     marker=dict(size=6, symbol='diamond', color='blue')
 ))
 
-# Add confidence interval as shaded region for the last prediction
-if last_valid_index is not None and lower_bound is not None and upper_bound is not None:
+# Add confidence intervals for last and second last predictions
+if last_valid_index is not None and lower_bound_last is not None and upper_bound_last is not None:
     fig.add_trace(go.Scatter(
-        x=[last_valid_index, last_valid_index],
-        y=[lower_bound, upper_bound],
+        x=[second_last_valid_index, last_valid_index],
+        y=[lower_bound_second_last, lower_bound_last],
+        fill='tonexty',
         mode='lines',
-        line=dict(color='rgba(255, 0, 0, 0.3)', width=10),
+        line=dict(color='rgba(255, 0, 0, 0.3)'),
         name='68% Confidence Interval'
+    ))
+    fig.add_trace(go.Scatter(
+        x=[second_last_valid_index, last_valid_index],
+        y=[upper_bound_second_last, upper_bound_last],
+        fill='tonexty',
+        mode='lines',
+        line=dict(color='rgba(255, 0, 0, 0.3)'),
+        showlegend=False
     ))
 
 # Customize layout
