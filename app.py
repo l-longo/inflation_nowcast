@@ -28,7 +28,10 @@ else:
 
 
 # Upload the uncertainty file
-file_path_unc = os.path.join(os.getcwd(), "collection_results.csv")
+if region == "US (Core PCE)":
+    file_path_unc = os.path.join(os.getcwd(), "collection_results.csv")                                         
+else:
+    file_path_unc = os.path.join(os.getcwd(), "collection_results_europe.csv")   
 df_uncertainty = pd.read_csv(file_path_unc)
 
 mean_value = df_uncertainty["Value"].mean()
