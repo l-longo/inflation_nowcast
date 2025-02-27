@@ -62,6 +62,21 @@ start_year, end_year = st.slider(
 
 df_filtered = df0_shifted.loc[str(start_year):str(end_year)]
 
+# Display the last available annual inflation rate and the Llama prediction
+last_inflation_index = df_filtered[target_var].last_valid_index()
+last_inflation_value = df_filtered.loc[last_inflation_index, target_var] if last_inflation_index else None
+last_llama_value = df_filtered.loc[last_inflation_index, 'pred_signal_llama_70b'] if last_inflation_index else None
+
+st.markdown(
+    f"""
+    ### 📊 Latest Inflation Data
+    - **Last available annual inflation rate:** {last_inflation_value:.2f}% (Month: {last_inflation_index.strftime('%B')})
+    - **Llama 70B Model Prediction:** {last_llama_value:.2f}%
+    """
+)
+
+st.write('For the US the benchmark (blue) is a prediction using the Inflation-SWAP, for Europe is an AR(1).') 
+
 # Find last and second last available data points for 'pred_signal_llama_70b'
 valid_indices = df_filtered['pred_signal_llama_70b'].dropna().index
 if len(valid_indices) >= 2:
