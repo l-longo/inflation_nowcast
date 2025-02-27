@@ -68,15 +68,7 @@ last_llama_index = df0['pred_signal_llama_70b'].last_valid_index()
 last_inflation_value = df0.loc[last_inflation_index, target_var]*100 if last_inflation_index else None
 last_llama_value = df0.loc[last_llama_index, 'pred_signal_llama_70b']*100 if last_inflation_index else None
 
-st.markdown(
-    f"""
-    ### 📊 Latest Inflation Data
-    - **Last available annual inflation rate:** {last_inflation_value:.4f}% (Month: {last_inflation_index.strftime('%B')})
-    - **Llama 70B Model Prediction:** {last_llama_value:.4f}%
-    """
-)
 
-st.write('For the US the benchmark (blue) is a prediction using the Inflation-SWAP, for Europe is an AR(1).') 
 
 # Find last and second last available data points for 'pred_signal_llama_70b'
 valid_indices = df_filtered['pred_signal_llama_70b'].dropna().index
@@ -146,6 +138,14 @@ fig.update_layout(
 #############Streamlit app (main part)##############################
 ####################################################################
 st.title(f"📈 Inflation Nowcast ({region})")
+st.markdown(
+    f"""
+    ### 📊 Latest Inflation Data
+    - **Last available annual inflation rate:** {last_inflation_value:.4f}% (Month: {last_inflation_index.strftime('%B')})
+    - **Llama 70B Model Prediction:** {last_llama_value:.4f}%
+    """
+)
+
 st.write('For the US the benchmark (blue) is a prediction using the Inflation-SWAP, for Europe is an AR(1).') 
 st.plotly_chart(fig, use_container_width=True)
 
