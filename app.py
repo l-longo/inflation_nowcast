@@ -28,19 +28,13 @@ else:
 
 
 # Upload the uncertainty file
-uploaded_file = st.file_uploader("Upload the uncertainty data (collection_results.csv)", type=["csv"])
-if uploaded_file is not None:
-    df_uncertainty = pd.read_csv(uploaded_file)
-    if "Value" not in df_uncertainty.columns:
-        st.error("The uploaded CSV must contain a 'Value' column.")
-        st.stop()
-    
-    # Compute 68% confidence interval (assuming normal distribution)
-    mean_value = df_uncertainty["Value"].mean()
-    std_dev = df_uncertainty["Value"].std()
-    conf_int_68 = 1.0 * std_dev  # Approximate for normal distribution
-else:
-    conf_int_68 = None
+
+df_uncertainty = pd.read_csv(uploaded_file)
+
+mean_value = df_uncertainty["Value"].mean()
+std_dev = df_uncertainty["Value"].std()
+conf_int_68 = 1.0 * std_dev  # Approximate for normal distribution
+
 
 
 
