@@ -141,8 +141,8 @@ st.title(f"📈 Inflation Nowcast ({region})")
 st.markdown(
     f"""
     ### 📊 Latest Inflation Data
-    - **Last available annual inflation rate:** {last_inflation_value:.4f}% (Month: {last_inflation_index.strftime('%B')})
-    - **Llama 70B Model Prediction:** {last_llama_value:.4f}%
+    - **Last available annual inflation rate:** {last_inflation_value:.4f}% (Month: {last_inflation_index.strftime('%B%Y')})
+    - **Llama 70B Model Prediction (next month):** {last_llama_value:.4f}%
     """
 )
 
