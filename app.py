@@ -17,7 +17,7 @@ if region == "US (Core PCE)":
     pred_col = 'pred_swap'
     target_var = 'inflation'
 else:
-    file_path = os.path.join(os.getcwd(), "data_infl_europe_120.xlsx")
+    file_path = os.path.join(os.getcwd(), "data_infl_europe_10.xlsx")
     try:
         df0 = pd.read_excel(file_path, engine="openpyxl", index_col=0, parse_dates=True)
     except FileNotFoundError:
