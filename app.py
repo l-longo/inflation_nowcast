@@ -63,10 +63,15 @@ start_year, end_year = st.slider(
 df_filtered = df0_shifted.loc[str(start_year):str(end_year)]
 
 # Display the last available annual inflation rate and the Llama prediction
-last_inflation_index = df0[target_var].last_valid_index()
-last_llama_index = df0['pred_signal_llama_70b'].last_valid_index()
-last_inflation_value = df0.loc[last_inflation_index, target_var]*100 if last_inflation_index else None
-last_llama_value = df0.loc[last_llama_index, 'pred_signal_llama_70b']*100 if last_inflation_index else None
+df_display = df0.copy()
+if region == "US (Core PCE)":
+    df_display.index = df_display.index - pd.DateOffset(months=h_step)
+
+
+last_inflation_index = df_display[target_var].last_valid_index()
+last_llama_index = df_display['pred_signal_llama_70b'].last_valid_index()
+last_inflation_value = df_display.loc[last_inflation_index, target_var]*100 if last_inflation_index else None
+last_llama_value = df_display.loc[last_llama_index, 'pred_signal_llama_70b']*100 if last_inflation_index else None
 
 
 
