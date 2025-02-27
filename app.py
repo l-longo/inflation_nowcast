@@ -48,7 +48,8 @@ conf_int_68 = 1.0 * std_dev  # Approximate for normal distribution
 h_step = 1
 # Shift index by h_step months
 df0_shifted = df0.copy()
-df0_shifted.index = df0_shifted.index - pd.DateOffset(months=h_step)
+if region == "US (Core PCE)":
+    df0_shifted.index = df0_shifted.index - pd.DateOffset(months=h_step)
 
 # User selects the year range
 min_year = 2019
