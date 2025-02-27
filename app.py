@@ -8,7 +8,7 @@ region = st.radio("Select Region:", ["US (Core PCE)", "Europe (HICP)"])
 
 # Load the data based on user selection
 if region == "US (Core PCE)":
-    file_path = os.path.join(os.getcwd(), "data.xlsx")
+    file_path = os.path.join(os.getcwd(), "data1.xlsx")
     try:
         df0 = pd.read_excel(file_path, engine="openpyxl", index_col=0, parse_dates=True)
     except FileNotFoundError:
