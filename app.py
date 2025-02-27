@@ -26,7 +26,28 @@ else:
     pred_col = 'pred_ar'
     target_var = 'inflation'
 
-# Define h_step (shift parameter)
+
+# Upload the uncertainty file
+uploaded_file = st.file_uploader("Upload the uncertainty data (collection_results.csv)", type=["csv"])
+if uploaded_file is not None:
+    df_uncertainty = pd.read_csv(uploaded_file)
+    if "Value" not in df_uncertainty.columns:
+        st.error("The uploaded CSV must contain a 'Value' column.")
+        st.stop()
+    
+    # Compute 68% confidence interval (assuming normal distribution)
+    mean_value = df_uncertainty["Value"].mean()
+    std_dev = df_uncertainty["Value"].std()
+    conf_int_68 = 1.0 * std_dev  # Approximate for normal distribution
+else:
+    conf_int_68 = None
+
+
+
+
+####################################################################
+#############Define parameters for plot#############################
+####################################################################
 h_step = 1
 # Shift index by h_step months
 df0_shifted = df0.copy()
@@ -41,11 +62,18 @@ start_year, end_year = st.slider(
     value=(2020, 2023), step=1
 )
 
-# Filter data based on selected years
 df_filtered = df0_shifted.loc[str(start_year):str(end_year)]
 
+# Find last available data point for 'pred_signal_llama_70b'
+last_valid_index = df_filtered['pred_signal_llama_70b'].last_valid_index()
+if last_valid_index is not None and conf_int_68 is not None:
+    last_valid_value = df_filtered.loc[last_valid_index, 'pred_signal_llama_70b']
+    lower_bound = last_valid_value - conf_int_68
+    upper_bound = last_valid_value + conf_int_68
+else:
+    lower_bound = None
+    upper_bound = None
 
-st.write('For the US the benchmark (blue) is a prediction using the Inflation-SWAP, for Europe is an AR(1).') 
 # Create interactive Plotly figure
 fig = go.Figure()
 fig.add_trace(go.Scatter(
@@ -65,6 +93,16 @@ fig.add_trace(go.Scatter(
     marker=dict(size=6, symbol='diamond', color='blue')
 ))
 
+# Add confidence interval as shaded region for the last prediction
+if last_valid_index is not None and lower_bound is not None and upper_bound is not None:
+    fig.add_trace(go.Scatter(
+        x=[last_valid_index, last_valid_index],
+        y=[lower_bound, upper_bound],
+        mode='lines',
+        line=dict(color='rgba(255, 0, 0, 0.3)', width=10),
+        name='68% Confidence Interval'
+    ))
+
 # Customize layout
 fig.update_layout(
     title=f"Inflation Predictions vs. True Values ({region})",
@@ -75,11 +113,22 @@ fig.update_layout(
     template="plotly_white"
 )
 
-# Streamlit app
+
+
+
+
+####################################################################
+#############Streamlit app (main part)##############################
+####################################################################
 st.title(f"📈 Inflation Nowcast ({region})")
+st.write('For the US the benchmark (blue) is a prediction using the Inflation-SWAP, for Europe is an AR(1).') 
 st.plotly_chart(fig, use_container_width=True)
 
-# Checkbox to toggle the error plot
+
+
+####################################################################
+#############Streamlit app (error plot)#############################
+####################################################################
 show_loss_plot = st.checkbox("Show Prediction Error (MAE)")
 if show_loss_plot:
     st.write('Mean absolute deviation from the target_var, over time.')
