@@ -100,18 +100,12 @@ fig.add_trace(go.Scatter(
 # Add confidence intervals for last and second last predictions
 if last_valid_index is not None and lower_bound_last is not None and upper_bound_last is not None:
     fig.add_trace(go.Scatter(
-        x=[second_last_valid_index, last_valid_index],
-        y=[lower_bound_second_last, lower_bound_last],
-        mode='lines',
-        line=dict(color='rgba(255, 0, 0, 0.3)', width=2),
-        name='68% Confidence Interval Lower'
-    ))
-    fig.add_trace(go.Scatter(
-        x=[second_last_valid_index, last_valid_index],
-        y=[upper_bound_second_last, upper_bound_last],
-        mode='fill',
-        line=dict(color='rgba(255, 0, 0, 0.3)', width=2),
-        name='68% Confidence Interval Upper'
+        x=[second_last_valid_index, last_valid_index, last_valid_index, second_last_valid_index],
+        y=[lower_bound_second_last, lower_bound_last, upper_bound_last, upper_bound_second_last],
+        fill='toself',
+        fillcolor='rgba(255, 0, 0, 0.3)',
+        mode='none',
+        name='68% Confidence Interval'
     ))
 
 # Customize layout
