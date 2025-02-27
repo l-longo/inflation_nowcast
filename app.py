@@ -28,8 +28,8 @@ else:
 
 
 # Upload the uncertainty file
-
-df_uncertainty = pd.read_csv(uploaded_file)
+file_path_unc = os.path.join(os.getcwd(), "collection_results.csv")
+df_uncertainty = pd.read_csv(file_path_unc)
 
 mean_value = df_uncertainty["Value"].mean()
 std_dev = df_uncertainty["Value"].std()
