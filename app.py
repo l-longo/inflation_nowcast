@@ -58,15 +58,25 @@ start_year, end_year = st.slider(
 
 df_filtered = df0_shifted.loc[str(start_year):str(end_year)]
 
-# Find last available data point for 'pred_signal_llama_70b'
-last_valid_index = df_filtered['pred_signal_llama_70b'].last_valid_index()
-if last_valid_index is not None and conf_int_68 is not None:
+# Find last and second last available data points for 'pred_signal_llama_70b'
+valid_indices = df_filtered['pred_signal_llama_70b'].dropna().index
+if len(valid_indices) >= 2:
+    last_valid_index = valid_indices[-1]
+    second_last_valid_index = valid_indices[-2]
     last_valid_value = df_filtered.loc[last_valid_index, 'pred_signal_llama_70b']
-    lower_bound = last_valid_value - conf_int_68
-    upper_bound = last_valid_value + conf_int_68
+    second_last_valid_value = df_filtered.loc[second_last_valid_index, 'pred_signal_llama_70b']
+    lower_bound_last = last_valid_value - conf_int_68
+    upper_bound_last = last_valid_value + conf_int_68
+    lower_bound_second_last = second_last_valid_value
+    upper_bound_second_last = second_last_valid_value
 else:
-    lower_bound = None
-    upper_bound = None
+    last_valid_index = None
+    second_last_valid_index = None
+    lower_bound_last = None
+    upper_bound_last = None
+    lower_bound_second_last = None
+    upper_bound_second_last = None
+
 
 # Create interactive Plotly figure
 fig = go.Figure()
