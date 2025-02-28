@@ -109,7 +109,7 @@ fig.add_trace(go.Scatter(
 ))
 fig.add_trace(go.Scatter(
     x=df_filtered.index, y=df_filtered[pred_col],
-    mode='lines+markers', name=f'{region} Prediction',
+    mode='lines+markers', name=f'Benchmark model',
     line=dict(color='blue', width=1, dash='dot'),
     marker=dict(size=6, symbol='diamond', color='blue')
 ))
@@ -174,7 +174,7 @@ if show_loss_plot:
     ))
     fig2.add_trace(go.Scatter(
         x=df_filtered.index, y=df_filtered['loss_pred'],
-        mode='lines+markers', name=f'{region} Prediction Error',
+        mode='lines+markers', name=f'Benchmark model Error',
         line=dict(color='blue', width=1, dash='dot'),
         marker=dict(size=6, symbol='diamond', color='blue')
     ))
@@ -204,7 +204,7 @@ if show_loss_plot_mse:
     ))
     fig3.add_trace(go.Scatter(
         x=df_filtered.index, y=df_filtered['loss_pred'].cumsum(),
-        mode='lines+markers', name=f'{region} Prediction Cumulative MSE',
+        mode='lines+markers', name=f'Benchamrk model Cumulative MSE',
         line=dict(color='blue', width=1, dash='dot'),
         marker=dict(size=6, symbol='diamond', color='blue')
     ))
