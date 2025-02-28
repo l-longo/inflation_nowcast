@@ -161,7 +161,7 @@ st.plotly_chart(fig, use_container_width=True)
 ####################################################################
 show_loss_plot = st.checkbox("Show Prediction Error (MAE)")
 if show_loss_plot:
-    st.write('Mean absolute deviation from the target_var, over time.')
+    st.write(f'Mean absolute deviation from the {target_var}, over time.')
     df_filtered['loss_llama_70b'] = abs(df_filtered[target_var] - df_filtered['pred_signal_llama_70b'])
     df_filtered['loss_pred'] = abs(df_filtered[target_var] - df_filtered[pred_col])
     
