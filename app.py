@@ -142,7 +142,7 @@ fig.update_layout(
 ####################################################################
 #############Streamlit app (main part)##############################
 ####################################################################
-st.title(f"📈 Inflation Nowcast ({region})")
+st.title(f"📈 Inflation Nowcast: {region}")
 st.markdown('Views are my own and do not necessarily represent the ones of European Commission')
 st.markdown(
     f"""
