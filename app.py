@@ -57,7 +57,7 @@ max_year = 2026
 start_year, end_year = st.slider(
     "Select the year range:",
     min_value=min_year, max_value=max_year,
-    value=(2020, 2023), step=1
+    value=(2024, 2026), step=1
 )
 
 df_filtered = df0_shifted.loc[str(start_year):str(end_year)]
