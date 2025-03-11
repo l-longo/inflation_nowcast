@@ -8,7 +8,7 @@ region = st.radio("Select Region:", ["US (Core PCE)", "Europe (HICP)"])
 
 # Load the data based on user selection
 if region == "US (Core PCE)":
-    file_path = os.path.join(os.getcwd(), "data.xlsx")
+    file_path = os.path.join(os.getcwd(), "PCEPILFE_Economics_optimized.xlsx")
     try:
         df0 = pd.read_excel(file_path, engine="openpyxl", index_col=0, parse_dates=True)
     except FileNotFoundError:
@@ -17,7 +17,7 @@ if region == "US (Core PCE)":
     pred_col = 'pred_swap'
     target_var = 'inflation'
 else:
-    file_path = os.path.join(os.getcwd(), "data_infl_europe_10.xlsx")
+    file_path = os.path.join(os.getcwd(), "HICP_europe_optimized.xlsx")
     try:
         df0 = pd.read_excel(file_path, engine="openpyxl", index_col=0, parse_dates=True)
     except FileNotFoundError:
