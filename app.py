@@ -161,17 +161,23 @@ fig.update_layout(
 ####################################################################
 st.title(f"📈 Real-time Nowcast: {region}")
 st.markdown('Views are my own and do not necessarily represent the ones of European Commission')
-st.markdown(
-    f"""
-    ### 📊 Latest Inflation Data
-    if region == 'Europe (Unemployment)':
+if region == 'Europe (Unemployment)':
+    st.markdown(
+        f"""
+        ### 📊 Latest Inflation Data
         - **Last available annual unemployment rate:** {last_inflation_value:.4f}% (Month: {last_inflation_index.strftime('%B%Y')})
-        - **Llama 70B Model Prediction:** {last_llama_value:.4f}% (next month)
-    else:
+        - **Llama 70B Model Prediction:** {last_llama_value:.4f}% (next month)        
+        """
+    )
+else:
+    st.markdown(
+        f"""
+        ### 📊 Latest Inflation Data
         - **Last available annual inflation rate:** {last_inflation_value:.4f}% (Month: {last_inflation_index.strftime('%B%Y')})
-        - **Llama 70B Model Prediction:** {last_llama_value:.4f}% (next month)
-    """
-)
+        - **Llama 70B Model Prediction:** {last_llama_value:.4f}% (next month)     
+        """
+    )
+    
 
 st.write('For the US the benchmark (blue) is a prediction using the Inflation-SWAP, for Europe is an AR(1).') 
 st.plotly_chart(fig, use_container_width=True)
