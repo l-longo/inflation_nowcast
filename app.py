@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 import os
 
 # User selects the region
-region = st.radio("Select Region:", ["US (Core PCE)", "Europe (HICP)"])
+region = st.radio("Select Region:", ["US (Core PCE)", "Europe (HICP)", "Europe (Unemployment)"])
 
 # Load the data based on user selection
 if region == "US (Core PCE)":
@@ -16,7 +16,7 @@ if region == "US (Core PCE)":
         st.stop()
     pred_col = 'pred_swap'
     target_var = 'inflation'
-else:
+elif region == "Europe (HICP)":
     file_path = os.path.join(os.getcwd(), "HICP_europe_optimized.xlsx")
     try:
         df0 = pd.read_excel(file_path, engine="openpyxl", index_col=0, parse_dates=True)
@@ -26,12 +26,25 @@ else:
     pred_col = 'pred_ar'
     target_var = 'inflation'
 
+else:
+    file_path = os.path.join(os.getcwd(), "Unemployment_europe_optimized.xlsx")
+    try:
+        df0 = pd.read_excel(file_path, engine="openpyxl", index_col=0, parse_dates=True)
+    except FileNotFoundError:
+        st.error(f"File not found: {file_path}")
+        st.stop()
+    pred_col = 'pred_ar'
+    target_var = 'unemployment'
+
 
 # Upload the uncertainty file
 if region == "US (Core PCE)":
     file_path_unc = os.path.join(os.getcwd(), "collection_results.csv")                                         
-else:
+elif region == "Europe (HICP)":
     file_path_unc = os.path.join(os.getcwd(), "HICP_collection_results.csv")   
+else:
+    file_path_unc = os.path.join(os.getcwd(), "Unemployment_collection_results.csv")
+    
 df_uncertainty = pd.read_csv(file_path_unc)
 
 mean_value = df_uncertainty["Value"].mean()
@@ -142,7 +155,7 @@ fig.update_layout(
 ####################################################################
 #############Streamlit app (main part)##############################
 ####################################################################
-st.title(f"📈 Inflation Nowcast: {region}")
+st.title(f"📈 Real-time Nowcast: {region}")
 st.markdown('Views are my own and do not necessarily represent the ones of European Commission')
 st.markdown(
     f"""
