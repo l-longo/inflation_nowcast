@@ -83,8 +83,12 @@ if region == "US (Core PCE)":
 
 last_inflation_index = df_display[target_var].last_valid_index()
 last_llama_index = df_display['pred_signal_llama_70b'].last_valid_index()
-last_inflation_value = df_display.loc[last_inflation_index, target_var]*100 if last_inflation_index else None
-last_llama_value = df_display.loc[last_llama_index, 'pred_signal_llama_70b']*100 if last_inflation_index else None
+if region == 'Europe (Unemployment)':
+    last_inflation_value = df_display.loc[last_inflation_index, target_var] if last_inflation_index else None
+    last_llama_value = df_display.loc[last_llama_index, 'pred_signal_llama_70b'] if last_inflation_index else None
+else:
+    last_inflation_value = df_display.loc[last_inflation_index, target_var]*100 if last_inflation_index else None
+    last_llama_value = df_display.loc[last_llama_index, 'pred_signal_llama_70b']*100 if last_inflation_index else None
 
 
 
@@ -160,8 +164,12 @@ st.markdown('Views are my own and do not necessarily represent the ones of Europ
 st.markdown(
     f"""
     ### 📊 Latest Inflation Data
-    - **Last available annual inflation rate:** {last_inflation_value:.4f}% (Month: {last_inflation_index.strftime('%B%Y')})
-    - **Llama 70B Model Prediction:** {last_llama_value:.4f}% (next month)
+    if region == 'Europe (Unemployment)':
+        - **Last available annual unemployment rate:** {last_inflation_value:.4f}% (Month: {last_inflation_index.strftime('%B%Y')})
+        - **Llama 70B Model Prediction:** {last_llama_value:.4f}% (next month)
+    else:
+        - **Last available annual inflation rate:** {last_inflation_value:.4f}% (Month: {last_inflation_index.strftime('%B%Y')})
+        - **Llama 70B Model Prediction:** {last_llama_value:.4f}% (next month)
     """
 )
 
