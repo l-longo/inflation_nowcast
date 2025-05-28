@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 import os
 
 # User selects the region
-#region = st.radio("Select Region:", ["US (Core PCE)", "Europe (HICP)", "Europe (Unemployment)"])
+region = st.radio("Select Region:", ["US (Core PCE)", "Europe (HICP)", "Europe (Unemployment)"])
 
 # Load the data based on user selection
 if region == "US (Core PCE)":
