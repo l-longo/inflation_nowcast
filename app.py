@@ -34,7 +34,7 @@ else:
         st.error(f"File not found: {file_path}")
         st.stop()
     pred_col = 'pred_ar'
-    target_var = 'unemployment'
+    target_var = 'Unemployment'
 
 
 # Upload the uncertainty file
