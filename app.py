@@ -143,14 +143,24 @@ if last_valid_index is not None and lower_bound_last is not None and upper_bound
     ))
 
 # Customize layout
-fig.update_layout(
-    title=f"Inflation Predictions vs. True Values ({region})",
-    xaxis_title="Date",
-    yaxis_title="Inflation Rate",
-    legend=dict(x=0, y=1),
-    hovermode="x unified",
-    template="plotly_white"
-)
+if region == 'Europe )unemployment)':
+    fig.update_layout(
+        title=f"Unemployment Predictions vs. True Values ({region})",
+        xaxis_title="Date",
+        yaxis_title="Unemployment Rate",
+        legend=dict(x=0, y=1),
+        hovermode="x unified",
+        template="plotly_white"
+    )
+else:
+    fig.update_layout(
+        title=f"Inflation Predictions vs. True Values ({region})",
+        xaxis_title="Date",
+        yaxis_title="Inflation Rate",
+        legend=dict(x=0, y=1),
+        hovermode="x unified",
+        template="plotly_white"
+    )
 
 
 
