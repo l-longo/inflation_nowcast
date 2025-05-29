@@ -143,7 +143,7 @@ if last_valid_index is not None and lower_bound_last is not None and upper_bound
     ))
 
 # Customize layout
-if region == 'Europe )unemployment)':
+if region == 'Europe (Unemployment)':
     fig.update_layout(
         title=f"Unemployment Predictions vs. True Values ({region})",
         xaxis_title="Date",
