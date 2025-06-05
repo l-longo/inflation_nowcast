@@ -79,6 +79,9 @@ df_filtered = df0_shifted.loc[str(start_year):str(end_year)]
 df_display = df0.copy()
 if region == "US (Core PCE)":
     df_display.index = df_display.index - pd.DateOffset(months=h_step)
+elif region == "Europe (HICP)":
+    df_display.index = df_display.index + pd.DateOffset(months=h_step)
+
 
 
 last_inflation_index = df_display[target_var].last_valid_index()
