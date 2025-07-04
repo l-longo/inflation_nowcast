@@ -4,10 +4,10 @@ import plotly.graph_objects as go
 import os
 
 # User selects the region
-region = st.radio("Select Region:", ["US (Core CPI)", "Europe (HICP)", "Europe (Unemployment)"])
+region = st.radio("Select Region:", ["US (CPI)", "Europe (HICP)", "Europe (Unemployment)"])
 
 # Load the data based on user selection
-if region == "US (Core PCE)":
+if region == "US (CPI)":
     file_path = os.path.join(os.getcwd(), "CPIAUCSL_Economics_optimized.xlsx")
     try:
         df0 = pd.read_excel(file_path, engine="openpyxl", index_col=0, parse_dates=True)
